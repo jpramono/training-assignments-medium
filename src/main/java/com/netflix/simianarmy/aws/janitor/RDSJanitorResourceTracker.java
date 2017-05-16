@@ -116,26 +116,9 @@ public class RDSJanitorResourceTracker implements JanitorResourceTracker {
 		}
 
     	if (orig == null) {
-    		StringBuilder sb = new StringBuilder();
-    		sb.append("insert into ").append(table);
-    		sb.append(" (");
-    		sb.append(AWSResource.FIELD_RESOURCE_ID).append(",");
-    		sb.append(AWSResource.FIELD_RESOURCE_TYPE).append(",");
-    		sb.append(AWSResource.FIELD_REGION).append(",");
-    		sb.append(AWSResource.FIELD_OWNER_EMAIL).append(",");
-    		sb.append(AWSResource.FIELD_DESCRIPTION).append(",");
-    		sb.append(AWSResource.FIELD_STATE).append(",");
-    		sb.append(AWSResource.FIELD_TERMINATION_REASON).append(",");
-    		sb.append(AWSResource.FIELD_EXPECTED_TERMINATION_TIME).append(",");
-    		sb.append(AWSResource.FIELD_ACTUAL_TERMINATION_TIME).append(",");
-			sb.append(AWSResource.FIELD_NOTIFICATION_TIME).append(",");
-    		sb.append(AWSResource.FIELD_LAUNCH_TIME).append(",");
-    		sb.append(AWSResource.FIELD_MARK_TIME).append(",");
-			sb.append(AWSResource.FIELD_OPT_OUT_OF_JANITOR).append(",");
-    		sb.append("additionalFields").append(") values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
-            LOGGER.debug(String.format("Insert statement is '%s'", sb));
-    		int updated = this.jdbcTemplate.update(sb.toString(),
+            LOGGER.debug(String.format("Insert statement is '%s'", Insert().toString()));
+    		int updated = this.jdbcTemplate.update(Insert().toString(),
     								 resource.getId(),
     								 value(resource.getResourceType().toString()),
     								 value(resource.getRegion()),
@@ -152,26 +135,8 @@ public class RDSJanitorResourceTracker implements JanitorResourceTracker {
     								 json);
             LOGGER.debug(String.format("%d rows inserted", updated));
     	} else {
-    		StringBuilder sb = new StringBuilder();
-    		sb.append("update ").append(table).append(" set ");
-    		sb.append(AWSResource.FIELD_RESOURCE_TYPE).append("=?,");
-    		sb.append(AWSResource.FIELD_REGION).append("=?,");
-    		sb.append(AWSResource.FIELD_OWNER_EMAIL).append("=?,");
-    		sb.append(AWSResource.FIELD_DESCRIPTION).append("=?,");
-    		sb.append(AWSResource.FIELD_STATE).append("=?,");
-    		sb.append(AWSResource.FIELD_TERMINATION_REASON).append("=?,");
-    		sb.append(AWSResource.FIELD_EXPECTED_TERMINATION_TIME).append("=?,");
-    		sb.append(AWSResource.FIELD_ACTUAL_TERMINATION_TIME).append("=?,");
-			sb.append(AWSResource.FIELD_NOTIFICATION_TIME).append("=?,");
-    		sb.append(AWSResource.FIELD_LAUNCH_TIME).append("=?,");
-    		sb.append(AWSResource.FIELD_MARK_TIME).append("=?,");
-			sb.append(AWSResource.FIELD_OPT_OUT_OF_JANITOR).append("=?,");
-    		sb.append("additionalFields").append("=? where ");
-    		sb.append(AWSResource.FIELD_RESOURCE_ID).append("=? and ");
-			sb.append(AWSResource.FIELD_REGION).append("=?");
-
-            LOGGER.debug(String.format("Update statement is '%s'", sb));
-    		int updated = this.jdbcTemplate.update(sb.toString(),
+            LOGGER.debug(String.format("Update statement is '%s'", Update().toString()));
+    		int updated = this.jdbcTemplate.update(Update().toString(),
     								 resource.getResourceType().toString(),
     								 value(resource.getRegion()),
 					                 emailValue(resource.getOwnerEmail()),
@@ -192,6 +157,50 @@ public class RDSJanitorResourceTracker implements JanitorResourceTracker {
     	LOGGER.debug("Successfully saved.");
     }
 
+    /**
+    sting builder
+     */
+    private StringBuilder Insert(){
+		new StringBuilder();
+		StringBuilder sb = new StringBuilder();
+		sb.append("insert into ").append(table);
+		sb.append(" (");
+		sb.append(AWSResource.FIELD_RESOURCE_ID).append(",");
+		sb.append(AWSResource.FIELD_RESOURCE_TYPE).append(",");
+		sb.append(AWSResource.FIELD_REGION).append(",");
+		sb.append(AWSResource.FIELD_OWNER_EMAIL).append(",");
+		sb.append(AWSResource.FIELD_DESCRIPTION).append(",");
+		sb.append(AWSResource.FIELD_STATE).append(",");
+		sb.append(AWSResource.FIELD_TERMINATION_REASON).append(",");
+		sb.append(AWSResource.FIELD_EXPECTED_TERMINATION_TIME).append(",");
+		sb.append(AWSResource.FIELD_ACTUAL_TERMINATION_TIME).append(",");
+		sb.append(AWSResource.FIELD_NOTIFICATION_TIME).append(",");
+		sb.append(AWSResource.FIELD_LAUNCH_TIME).append(",");
+		sb.append(AWSResource.FIELD_MARK_TIME).append(",");
+		sb.append(AWSResource.FIELD_OPT_OUT_OF_JANITOR).append(",");
+		sb.append("additionalFields").append(") values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+		return sb;
+	}
+	private StringBuilder Update(){
+		StringBuilder sb = new StringBuilder();
+		sb.append("update ").append(table).append(" set ");
+		sb.append(AWSResource.FIELD_RESOURCE_TYPE).append("=?,");
+		sb.append(AWSResource.FIELD_REGION).append("=?,");
+		sb.append(AWSResource.FIELD_OWNER_EMAIL).append("=?,");
+		sb.append(AWSResource.FIELD_DESCRIPTION).append("=?,");
+		sb.append(AWSResource.FIELD_STATE).append("=?,");
+		sb.append(AWSResource.FIELD_TERMINATION_REASON).append("=?,");
+		sb.append(AWSResource.FIELD_EXPECTED_TERMINATION_TIME).append("=?,");
+		sb.append(AWSResource.FIELD_ACTUAL_TERMINATION_TIME).append("=?,");
+		sb.append(AWSResource.FIELD_NOTIFICATION_TIME).append("=?,");
+		sb.append(AWSResource.FIELD_LAUNCH_TIME).append("=?,");
+		sb.append(AWSResource.FIELD_MARK_TIME).append("=?,");
+		sb.append(AWSResource.FIELD_OPT_OUT_OF_JANITOR).append("=?,");
+		sb.append("additionalFields").append("=? where ");
+		sb.append(AWSResource.FIELD_RESOURCE_ID).append("=? and ");
+		sb.append(AWSResource.FIELD_REGION).append("=?");
+		return sb;
+	}
 	/**
      * Returns a list of AWSResource objects. You need to override this method if more
      * specific resource types (e.g. subtypes of AWSResource) need to be obtained from
